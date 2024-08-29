@@ -28,7 +28,7 @@ filename_results<-"ABC_Results"
 # CHOOSE SETTING FOR SMC-ABC
 #-------------------------------------------------------------------------------
   
-N<-1000 #number of kept samples in each iteration 
+N<-100 #number of kept samples in each iteration 
 p<-0.5 #percentile for threshold computation
 
 N_pilot<-10^4 #number of distances for the pilot run
@@ -40,7 +40,7 @@ T<-200
 hobs<-0.02
 
 #Budget (maximum number of simulations/paths allowed)
-budget<-10^6
+budget<-10^5
 
 #--------------------------------------------------------------------------
 # PREPARE SMC-ABC
@@ -87,11 +87,12 @@ registerDoSNOW(cl)
 # prepare observed data
 #--------------------------------------------------------------------------
 
+#matrices required for splitting simulation
 dm<-exp_mat_SDEharmosc(href,eps,gamma)
 cm<-t(chol(cov_mat_SDEharmosc(href,sig,eps,gamma)))
 
 #simulate reference data
-sol<-FHN_Splitting_Cpp(gridref,href,startv,dm,cm,eps,beta) #package SplittingFHN
+sol<-FHN_Strang_Cpp(gridref,href,startv,dm,cm,eps,beta) #package SplittingStochasticFHN
 refData<-sol[1,]
 
 #subsample reference data (to hobs)
@@ -134,7 +135,8 @@ stepD<-diff(densX$x)[1]
 # Start Pilot run
 #-------------------------------------------------------------------------------
 
-merge_d<-foreach(i=1:N_pilot,.combine='rbind',.packages = c('SplittingFHN')) %dopar% {
+#call ABC pilot function
+merge_d<-foreach(i=1:N_pilot,.combine='rbind',.packages = c('SplittingStochasticFHN')) %dopar% {
   ABC_Pilot(T,hsim,gridsim,hobs,gridobs,startv,we,densX$y,stepD,startSupp,endSupp,Lsupport,specX$spec,span_val,stepP,Pr)
 }
 
@@ -163,7 +165,8 @@ count_total_sims<-0 #to count the total number of simulations (datasets/paths) r
 
 r<-1
 
-merge_d<-foreach(i=1:N,.combine='rbind',.packages = c('SplittingFHN')) %dopar% {
+#Call ABC function for iteration r=1
+merge_d<-foreach(i=1:N,.combine='rbind',.packages = c('SplittingStochasticFHN')) %dopar% {
   ABC_r1(T,hsim,gridsim,hobs,gridobs,startv,we,densX$y,stepD,startSupp,endSupp,Lsupport,specX$spec,span_val,stepP,Pr,delta_r)
 }
 
@@ -210,7 +213,8 @@ while(count_total_sims<budget){
   #determine threshold delta
   delta_r<-Dvec[[N*p]] 
   
-  merge_d<-foreach(i=1:N,.combine='rbind',.packages = c('SplittingFHN','mvnfast')) %dopar% {
+  #call ABC-SMC function for iterations r>1
+  merge_d<-foreach(i=1:N,.combine='rbind',.packages = c('SplittingStochasticFHN','mvnfast')) %dopar% {
     ABC_SMC(T,hsim,gridsim,hobs,gridobs,startv,we,densX$y,stepD,startSupp,endSupp,Lsupport,specX$spec,span_val,stepP,epsvec,gammavec,betavec,sigvec,norm_weights,delta_r,Pr,sigma_kernel)
   }
   

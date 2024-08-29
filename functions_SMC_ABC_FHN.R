@@ -19,14 +19,17 @@
 #Output:  exponential matrix appearing in the exact solution of the linear subequation in the splitting procedure
 
 exp_mat_SDEharmosc<-function(t,eps,gamma){
+  #set parameters
   a<-1/eps
   b<-gamma
+  #create and fill matrix
   ret<-matrix(0, nrow = 2, ncol = 2)
   d<-sqrt(4*a*b-1)
   cdt<-cos(0.5*d*t)
   sdt<-sin(0.5*d*t)
   ret[1,]<-c(cdt+(1/d)*sdt,((-2*a)/d)*sdt)
   ret[2,]<-c(((2*b)/d)*sdt,cdt-(1/d)*sdt)
+  #return matrix
   return (exp(-0.5*t)*ret)
 }
 
@@ -39,8 +42,10 @@ exp_mat_SDEharmosc<-function(t,eps,gamma){
 #Output:  covariance matrix appearing in the exact solution of the linear subequation in the splitting procedure
 
 cov_mat_SDEharmosc<-function(t,sig,eps,gamma){
+  #set parameters
   a<-1/eps
   b<-gamma
+  #create and fill matrix
   ret<-matrix(0, nrow = 2, ncol = 2)
   d1<-sqrt(4*a*b-1)
   d2<-4*a*b-1
@@ -49,6 +54,7 @@ cov_mat_SDEharmosc<-function(t,sig,eps,gamma){
   sdt<-sin(d1*t)
   ret[1,]<-c(((a*sig^2)/(-2*b*d2))*(-d2+et*4*a*b-et*cdt+et*sdt*d1),(a*sig^2/d2)*et*(cdt-1))
   ret[2,]<-c((a*sig^2/d2)*et*(cdt-1),((sig^2)/(-2*d2))*(-d2+et*4*a*b-et*cdt-et*sdt*d1))
+  #return matrix
   return (ret)
 }
 
@@ -122,7 +128,7 @@ ABC_Pilot<-function(in_T,in_h,in_grid,in_hobs,in_gridobs,in_startv,in_we,in_dens
   #-----------------------------------------------------------------------
   
   #simulate synthetic data conditioned on theta
-  sol<-FHN_Splitting_Cpp(grid,h,startv,dm,cm,eps,beta) #package SplittingFHN
+  sol<-FHN_Strang_Cpp(grid,h,startv,dm,cm,eps,beta) #package SplittingFHN
   Ysim<-sol[1,]
   
   #subsample data (to same grid as the observed data)
@@ -238,7 +244,7 @@ ABC_r1<-function(in_T,in_h,in_grid,in_hobs,in_gridobs,in_startv,in_we,in_densX,i
     #-----------------------------------------------------------------------
     
     #simulate synthetic data conditioned on theta
-    sol<-FHN_Splitting_Cpp(grid,h,startv,dm,cm,eps,beta) #package SplittingFHN
+    sol<-FHN_Strang_Cpp(grid,h,startv,dm,cm,eps,beta) #package SplittingFHN
     Ysim<-sol[1,]
     
     #subsample data (to same grid as the observed data)
@@ -395,7 +401,7 @@ ABC_SMC<-function(in_T,in_h,in_grid,in_hobs,in_gridobs,in_startv,in_we,in_densX,
     #-----------------------------------------------------------------------
     
     #simulate synthetic data conditioned on theta
-    sol<-FHN_Splitting_Cpp(grid,h,startv,dm,cm,eps,beta) #package SplittingFHN
+    sol<-FHN_Strang_Cpp(grid,h,startv,dm,cm,eps,beta) #package SplittingFHN
     Ysim<-sol[1,]
     
     #subsample data (to same grid as the observed data)

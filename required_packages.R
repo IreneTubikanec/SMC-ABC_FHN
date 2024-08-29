@@ -17,8 +17,8 @@ library(foreach)
 library(doSNOW)
 library(doParallel)
 
-#Simulation of a path of the stochastic FHN model (Cpp-code in the SplittingFHN-package)
-library(SplittingFHN)
+#Simulation of a path of the stochastic FHN model (Cpp-code in the SplittingStochasticFHN-package)
+library(SplittingStochasticFHN)
 
 #Multivariate normal distribution
 library(mvnfast) 
