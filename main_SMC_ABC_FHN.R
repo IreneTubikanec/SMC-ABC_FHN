@@ -28,7 +28,7 @@ filename_results<-"ABC_Results"
 # CHOOSE SETTING FOR SMC-ABC
 #-------------------------------------------------------------------------------
   
-N<-100 #number of kept samples in each iteration 
+N<-1000 #number of kept samples in each iteration 
 p<-0.5 #percentile for threshold computation
 
 N_pilot<-10^4 #number of distances for the pilot run
@@ -40,7 +40,7 @@ T<-200
 hobs<-0.02
 
 #Budget (maximum number of simulations/paths allowed)
-budget<-10^5
+budget<-10^6
 
 #--------------------------------------------------------------------------
 # PREPARE SMC-ABC
