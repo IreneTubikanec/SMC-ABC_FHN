@@ -1,5 +1,5 @@
 Author: Irene Tubikanec
-Date:   2024-05-24 (last update on 29-08-2024)
+Date:   2024-05-24 (last update on 2024-08-29)
 
 Description: This code provides an implementation of the structure-based and preserving (SBP) SMC-ABC method for parameter estimation in the stochastic FitzHugh-Nagumo (FHN) model, proposed in the paper:
          
