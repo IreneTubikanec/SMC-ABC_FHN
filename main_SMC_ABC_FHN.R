@@ -28,7 +28,7 @@ filename_results<-"ABC_Results"
 # CHOOSE SETTING FOR SMC-ABC
 #-------------------------------------------------------------------------------
   
-N<-1000 #number of kept samples in each iteration 
+N<-100 #1000 #number of kept samples in each iteration 
 p<-0.5 #percentile for threshold computation
 
 N_pilot<-10^4 #number of distances for the pilot run
@@ -37,10 +37,10 @@ N_pilot<-10^4 #number of distances for the pilot run
 T<-200
 
 #Time step of observed data
-hobs<-0.02
+hobs<-0.08
 
 #Budget (maximum number of simulations/paths allowed)
-budget<-10^6
+budget<-10^5 #10^6
 
 #--------------------------------------------------------------------------
 # PREPARE SMC-ABC
@@ -87,18 +87,17 @@ registerDoSNOW(cl)
 # prepare observed data
 #--------------------------------------------------------------------------
 
-#matrices required for splitting simulation
-dm<-exp_mat_SDEharmosc(href,eps,gamma)
-cm<-t(chol(cov_mat_SDEharmosc(href,sig,eps,gamma)))
+#read observed reference data
+if(hobs==0.02){
+  X<-as.vector(t(read.table("Reference_Data/data_Delta0.02.txt",sep="",header=F)))
+}
+if(hobs==0.04){
+  X<-as.vector(t(read.table("Reference_Data/data_Delta0.04.txt",sep="",header=F)))
+}
+if(hobs==0.08){
+  X<-as.vector(t(read.table("Reference_Data/data_Delta0.08.txt",sep="",header=F)))
+}
 
-#simulate reference data
-sol<-FHN_Strang_Cpp(gridref,href,startv,dm,cm,eps,beta) #package SplittingStochasticFHN
-refData<-sol[1,]
-
-#subsample reference data (to hobs)
-h_ratio<-hobs/href
-indices<-seq(1,length(refData),h_ratio)
-X<-refData[indices]
 #cut off reference data (to T)
 X<-X[1:((T/hobs)+1)]
 
