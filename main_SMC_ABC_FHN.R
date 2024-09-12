@@ -65,11 +65,6 @@ gamma<-1.5
 beta<-0.8
 sig<-0.3
 
-#time grid for reference data (used to determine the observed data)
-Tref<-200
-href<-10^-4
-gridref<-seq(from=0,to=Tref,by=href)
-
 #time grid for observed data
 gridobs<-seq(from=0,to=T,by=hobs)
 #time grid for simulated synthetic data
